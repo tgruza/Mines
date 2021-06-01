@@ -8,7 +8,8 @@ public class Cell extends JToggleButton {
     private int CELL_SIZE;
     private int COORD_X;
     private int COORD_Y;
-    private boolean mine;
+    private boolean mine = false;
+    private int numberOfMinesAround;
 
     public Cell(int CELL_SIZE, int COORD_X, int COORD_Y) {
         this.CELL_SIZE = CELL_SIZE;
@@ -17,9 +18,8 @@ public class Cell extends JToggleButton {
         this.setName(COORD_X + " " + COORD_Y);
         this.setPreferredSize(new Dimension(CELL_SIZE, CELL_SIZE));
         this.setAlignmentX(500);
-        this.setBorder(null);
         this.setModel(new CellModel());
-        this.setText(COORD_X + " " + COORD_Y);
+        this.setActionCommand(COORD_X + " " + COORD_Y);
     }
 
     public boolean isMine() {
@@ -38,6 +38,14 @@ public class Cell extends JToggleButton {
         return COORD_Y;
     }
 
+    public int getNumberOfMinesAround() {
+        return numberOfMinesAround;
+    }
+
+    public void setNumberOfMinesAround(int numberOfMinesAround) {
+        this.numberOfMinesAround = numberOfMinesAround;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,14 +62,5 @@ public class Cell extends JToggleButton {
         return Objects.hash(CELL_SIZE, COORD_X, COORD_Y, mine);
     }
 
-    public void reset() {
-        super.setSelected(false);
-    }
 
-    @Override
-    public void setSelected(boolean b) {
-        if (!isSelected()) {
-            super.setSelected(b);
-        }
-    }
 }
