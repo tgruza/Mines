@@ -9,6 +9,7 @@ public class Icons {
     private Image mineIcon;
     private Image numberIcon;
     private Image buttonIcon;
+    private Image flagIcon;
 
     public Icons() {
     }
@@ -16,7 +17,7 @@ public class Icons {
     public Image getButtonImage() {
         try {
 
-            buttonIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/blank.png")));
+            buttonIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/icon.png")));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -26,8 +27,7 @@ public class Icons {
     public Image getMineImage() {
         try {
 
-            mineIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/mineIcon.png")));
-            //mineIcon = ImageIO.read(new File("C:\\Kurs JAVA\\MineSweeper\\src\\main\\resources\\mineIcon.png"));
+            mineIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/minem.png")));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -37,34 +37,47 @@ public class Icons {
     public Image getNumberIcons(int number) {
         try {
             switch (number) {
+                case 0:
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/iconPressed.png")));
+                    break;
                 case 1:
-                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/1.png")));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/1m.png")));
                     break;
                 case 2:
-                    numberIcon = ImageIO.read(new File("C:\\Kurs JAVA\\MineSweeper\\src\\main\\resources\\2.png"));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/2m.png")));
                     break;
                 case 3:
-                    numberIcon = ImageIO.read(new File("C:\\Kurs JAVA\\MineSweeper\\src\\main\\resources\\3.png"));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/3m.png")));
                     break;
                 case 4:
-                    numberIcon = ImageIO.read(new File("C:\\Kurs JAVA\\MineSweeper\\src\\main\\resources\\4.png"));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/4m.png")));
                     break;
                 case 5:
-                    numberIcon = ImageIO.read(new File("C:\\Kurs JAVA\\MineSweeper\\src\\main\\resources\\5.png"));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/5m.png")));
                     break;
                 case 6:
-                    numberIcon = ImageIO.read(new File("C:\\Kurs JAVA\\MineSweeper\\src\\main\\resources\\6.png"));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/6.png")));
                     break;
                 case 7:
-                    numberIcon = ImageIO.read(new File("C:\\Kurs JAVA\\MineSweeper\\src\\main\\resources\\7.png"));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/7.png")));
                     break;
                 case 8:
-                    numberIcon = ImageIO.read(new File("C:\\Kurs JAVA\\MineSweeper\\src\\main\\resources\\8.png"));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/8.png")));
                     break;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return numberIcon;
+    }
+
+    public Image getFlagIcon() {
+        try {
+
+            flagIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/flagIconm.png")));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return flagIcon;
     }
 }
