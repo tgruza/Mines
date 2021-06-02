@@ -20,4 +20,9 @@ public class CellServiceImpl implements CellService {
         cell.setIcon(new ImageIcon(icons.getButtonImage()));
         cell.setDisabledSelectedIcon(new ImageIcon(icons.getNumberIcons(numberOfMines)));
     }
+
+    @Override
+    public void setFlagCellIcon(Cell cell) {
+        cell.setIcon(new ImageIcon(icons.getFlagIcon()));
+    }
 }
