@@ -22,7 +22,6 @@ public class GameController extends JPanel implements ActionListener {
     private boolean running;
     private int numOfMines;
     private Cell[][] cell;
-    private int probability;
     private Random random;
     String cellPressedCoords = "";
     private int numberOfMinesAround;
@@ -36,7 +35,6 @@ public class GameController extends JPanel implements ActionListener {
         toolBarController.setDifficultyButton(new setDifficultyButton());
         toolBarController.setUserSettingsButton(new setUserSettingsButton());
 
-        //setValues();
         cellService = new CellServiceImpl();
         random = new Random();
 
@@ -48,11 +46,11 @@ public class GameController extends JPanel implements ActionListener {
 
     public void startGame() {
         running = true;
+        deleteCells();
         startValues();
-        //deleteCells();
         createCells();
         setMines();
-        setNumberOfMinesAround();
+        checkNumberOfMinesAround();
         setImagesToCells();
         addListenersAndCells();
         this.revalidate();
@@ -67,41 +65,43 @@ public class GameController extends JPanel implements ActionListener {
     public void draw(Graphics g) {
     }
 
+    //get "difficult values" that was set by user and set app window and number of mines
     public void startValues() {
-        if (difficultLevel.isEmpty()) {
+        if (difficultLevel.equals("")) {
             numbOfCellsInRow = 10;
             numbOfCellsRows = 10;
-            SCREEN_WIDTH = 300;
-            SCREEN_HEIGHT = 300;
+            SCREEN_WIDTH = 305;
+            SCREEN_HEIGHT = 305;
             numOfMines = 12;
         }
         if (difficultLevel.equals("easy")) {
             numbOfCellsInRow = 8;
             numbOfCellsRows = 8;
-            SCREEN_WIDTH = 250;
-            SCREEN_HEIGHT = 250;
+            SCREEN_WIDTH = 245;
+            SCREEN_HEIGHT = 245;
             numOfMines = 10;
         }
         if (difficultLevel.equals("medium")) {
             numbOfCellsInRow = 16;
             numbOfCellsRows = 16;
-            SCREEN_WIDTH = 450;
-            SCREEN_HEIGHT = 450;
+            SCREEN_WIDTH = 482;
+            SCREEN_HEIGHT = 482;
             numOfMines = 40;
         }
         if (difficultLevel.equals("hard")) {
             numbOfCellsRows = 16;
             numbOfCellsInRow = 30;
-            SCREEN_WIDTH = 800;
-            SCREEN_HEIGHT = 450;
+            SCREEN_WIDTH = 900;
+            SCREEN_HEIGHT = 482;
             numOfMines = 99;
         }
-        this.setMinimumSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        this.setMaximumSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+        this.revalidate();
         cell = new Cell[numbOfCellsInRow][numbOfCellsRows];
     }
 
+    //delete cells if exists
     public void deleteCells() {
         if (cell != null) {
             for (int y = 0; y < numbOfCellsRows; y++) {
@@ -112,6 +112,7 @@ public class GameController extends JPanel implements ActionListener {
         }
     }
 
+    //add coordinates and size for each cell in array
     public void createCells() {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
@@ -120,18 +121,20 @@ public class GameController extends JPanel implements ActionListener {
         }
     }
 
+    //get random cell and set, or not mine on it
     public void setMines() {
         int x;
         int y;
         for (int i = 0; i < numOfMines; i++) {
             x = random.nextInt(numbOfCellsInRow);
             y = random.nextInt(numbOfCellsRows);
-            probability = random.nextInt(15);
+
             cell[x][y].setMine(true);
         }
     }
 
-    public void setNumberOfMinesAround() {
+    //check number of mines around the each cell in array
+    public void checkNumberOfMinesAround() {
         numberOfMinesAround = 0;
 
         for (int y = 0; y < numbOfCellsRows; y++) {
@@ -182,6 +185,7 @@ public class GameController extends JPanel implements ActionListener {
         }
     }
 
+    //check if cell is mine and add proper image to it
     public void setImagesToCells() {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
@@ -195,6 +199,7 @@ public class GameController extends JPanel implements ActionListener {
 
     }
 
+    //adds listeners to cell and cells to JPanel
     public void addListenersAndCells() {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
@@ -204,6 +209,7 @@ public class GameController extends JPanel implements ActionListener {
         }
     }
 
+    //check if cell has blind spot nearby and if yes uncover it and check again
     public void checkCell(String cellPressed) {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
@@ -212,7 +218,7 @@ public class GameController extends JPanel implements ActionListener {
                         cell[x][y].setEnabled(false);
                         //up
                         if (y > 0) {
-                            //cell[x][y - 1].setSelected(true);
+                            cell[x][y - 1].setSelected(true);
                             if (cell[x][y - 1].getNumberOfMinesAround() == 0 && cell[x][y - 1].isEnabled()) {
                                 checkCell(cell[x][y - 1].getActionCommand());
                             }
@@ -288,6 +294,7 @@ public class GameController extends JPanel implements ActionListener {
         }
     }
 
+    //if user clicked on mine uncover all cells, and end game
     public void gameOver() {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
@@ -353,7 +360,7 @@ public class GameController extends JPanel implements ActionListener {
             panel1.setPreferredSize(new Dimension(200, 70));
             panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
             panel1.setOpaque(true);
-            JPanel inputpanel = new JPanel();
+            JPanel inputPanel = new JPanel();
             JButton button = new JButton("Enter");
             button.setActionCommand("Enter");
 
@@ -368,19 +375,20 @@ public class GameController extends JPanel implements ActionListener {
                 group.add(easy);
                 group.add(medium);
                 group.add(hard);
-                inputpanel.add(easy);
-                inputpanel.add(medium);
-                inputpanel.add(hard);
-                inputpanel.add(button);
+                inputPanel.add(easy);
+                inputPanel.add(medium);
+                inputPanel.add(hard);
+                inputPanel.add(button);
 
             button.addActionListener(actionEvent -> {
                 if (easy.isSelected() || medium.isSelected() || hard.isSelected()) {
                     difficultLevel = group.getSelection().getActionCommand();
                     startGame();
+                    frame.dispose();
                 }
             });
 
-            panel1.add(inputpanel);
+            panel1.add(inputPanel);
             frame.getContentPane().add(BorderLayout.CENTER, panel1);
             frame.pack();
             frame.setLocationRelativeTo(null);

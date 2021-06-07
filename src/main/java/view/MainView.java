@@ -17,7 +17,7 @@ public class MainView extends JFrame {
         this.setTitle("Mines");
         this.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/gameIcon.jpg"))));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
+        this.setResizable(true);
         this.pack();
         this.setVisible(true);
         this.setLocationRelativeTo(null);
