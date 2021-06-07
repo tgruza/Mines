@@ -1,25 +1,42 @@
 package view;
 
-import controller.GameController;
-import controller.ToolBarController;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.Objects;
 
 public class MainView extends JFrame {
 
-    public MainView() throws IOException {
-        GameController gameController = new GameController();
-        this.add(gameController);
-        this.setJMenuBar(gameController.getToolBarController());
+    private JPanel jPanel = new JPanel();
+
+    public MainView() {
+    }
+
+    public void showJPanel() {
+        jPanel.setBackground(Color.lightGray);
+        jPanel.setFocusable(true);
+    }
+
+    public void setKeyAdapter(KeyListener keyListener) {
+        jPanel.addKeyListener(keyListener);
+    }
+
+
+    public void showFrame() throws IOException {
+        showJPanel();
+        this.add(jPanel);
         this.setTitle("Mines");
         this.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/gameIcon.jpg"))));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(true);
+        this.setResizable(false);
         this.pack();
         this.setVisible(true);
         this.setLocationRelativeTo(null);
+    }
+
+    public JPanel getjPanel() {
+        return jPanel;
     }
 }

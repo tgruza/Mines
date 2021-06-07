@@ -3,20 +3,25 @@ package controller;
 import model.Cell;
 import service.CellService;
 import service.CellServiceImpl;
+import view.MainView;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.Random;
 
+public class MainController implements ActionListener {
 
-public class GameController extends JPanel implements ActionListener {
-
-    private ToolBarController toolBarController = new ToolBarController();
+    private final MainView mainView = new MainView();
+    private final ToolBarController toolBarController = new ToolBarController();
     private final CellService cellService;
+
     private int SCREEN_WIDTH;
     private int SCREEN_HEIGHT;
-    private final int CELL_SIZE = 25;
+    private int CELL_SIZE = 25;
     private int numbOfCellsInRow;
     private int numbOfCellsRows;
     private boolean running;
@@ -26,21 +31,19 @@ public class GameController extends JPanel implements ActionListener {
     String cellPressedCoords = "";
     private int numberOfMinesAround;
     private String difficultLevel = "";
-    Timer timer = new Timer(0, this);
 
 
-    public GameController() {
-        toolBarController.setNewGameButton(new setNewGameButton());
-        toolBarController.setExitMenuButton(new setExitMenuButton());
-        toolBarController.setDifficultyButton(new setDifficultyButton());
-        toolBarController.setUserSettingsButton(new setUserSettingsButton());
+    public MainController() {
+        mainView.setKeyAdapter(new MyKeyAdapter());
+
+        toolBarController.setNewGameButton(new MainController.setNewGameButton());
+        toolBarController.setExitMenuButton(new MainController.setExitMenuButton());
+        toolBarController.setDifficultyButton(new MainController.setDifficultyButton());
 
         cellService = new CellServiceImpl();
         random = new Random();
 
-        this.setBackground(Color.lightGray);
-        this.setFocusable(true);
-        this.addKeyListener(new MyKeyAdapter());
+
         startGame();
     }
 
@@ -53,16 +56,7 @@ public class GameController extends JPanel implements ActionListener {
         checkNumberOfMinesAround();
         setImagesToCells();
         addListenersAndCells();
-        this.revalidate();
-        timer.start();
-    }
-
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        draw(g);
-    }
-
-    public void draw(Graphics g) {
+        mainView.pack();
     }
 
     //get "difficult values" that was set by user and set app window and number of mines
@@ -96,8 +90,8 @@ public class GameController extends JPanel implements ActionListener {
             numOfMines = 99;
         }
 
-        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        this.revalidate();
+        mainView.getjPanel().setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+        mainView.pack();
         cell = new Cell[numbOfCellsInRow][numbOfCellsRows];
     }
 
@@ -106,7 +100,7 @@ public class GameController extends JPanel implements ActionListener {
         if (cell != null) {
             for (int y = 0; y < numbOfCellsRows; y++) {
                 for (int x = 0; x < numbOfCellsInRow; x++) {
-                    this.remove(cell[x][y]);
+                    mainView.getjPanel().remove(cell[x][y]);
                 }
             }
         }
@@ -191,7 +185,8 @@ public class GameController extends JPanel implements ActionListener {
             for (int x = 0; x < numbOfCellsInRow; x++) {
                 if (cell[x][y].isMine()) {
                     cellService.setMineCellsIcon(cell[x][y]);
-                } if (!cell[x][y].isMine()) {
+                }
+                if (!cell[x][y].isMine()) {
                     cellService.setSafeCellsIcon(cell[x][y], cell[x][y].getNumberOfMinesAround());
                 }
             }
@@ -204,7 +199,7 @@ public class GameController extends JPanel implements ActionListener {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
                 cell[x][y].addActionListener(this);
-                this.add(cell[x][y]);
+                mainView.getjPanel().add(cell[x][y]);
             }
         }
     }
@@ -303,15 +298,14 @@ public class GameController extends JPanel implements ActionListener {
             }
         }
         running = false;
-        timer.stop();
     }
-
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         cellPressedCoords = actionEvent.getActionCommand();
         checkCell(cellPressedCoords);
     }
+
 
     public class MyKeyAdapter extends KeyAdapter {
         @Override
@@ -328,10 +322,6 @@ public class GameController extends JPanel implements ActionListener {
     //ToolBar listeners and settings
     public ToolBarController getToolBarController() {
         return toolBarController;
-    }
-
-    public void setToolBarController(ToolBarController toolBarController) {
-        this.toolBarController = toolBarController;
     }
 
     class setNewGameButton implements ActionListener {
@@ -354,8 +344,13 @@ public class GameController extends JPanel implements ActionListener {
     class setDifficultyButton implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JFrame frame = new JFrame("Difficult Level");
+            JFrame frame = new JFrame("");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            try {
+                frame.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/gameIcon.jpg"))));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
             JPanel panel1 = new JPanel();
             panel1.setPreferredSize(new Dimension(200, 70));
             panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
@@ -365,20 +360,20 @@ public class GameController extends JPanel implements ActionListener {
             button.setActionCommand("Enter");
 
 
-                ButtonGroup group = new ButtonGroup();
-                JRadioButton easy = new JRadioButton("Easy");
-                easy.setActionCommand("easy");
-                JRadioButton medium = new JRadioButton("Medium");
-                medium.setActionCommand("medium");
-                JRadioButton hard = new JRadioButton("Hard");
-                hard.setActionCommand("hard");
-                group.add(easy);
-                group.add(medium);
-                group.add(hard);
-                inputPanel.add(easy);
-                inputPanel.add(medium);
-                inputPanel.add(hard);
-                inputPanel.add(button);
+            ButtonGroup group = new ButtonGroup();
+            JRadioButton easy = new JRadioButton("Easy");
+            easy.setActionCommand("easy");
+            JRadioButton medium = new JRadioButton("Medium");
+            medium.setActionCommand("medium");
+            JRadioButton hard = new JRadioButton("Hard");
+            hard.setActionCommand("hard");
+            group.add(easy);
+            group.add(medium);
+            group.add(hard);
+            inputPanel.add(easy);
+            inputPanel.add(medium);
+            inputPanel.add(hard);
+            inputPanel.add(button);
 
             button.addActionListener(actionEvent -> {
                 if (easy.isSelected() || medium.isSelected() || hard.isSelected()) {
@@ -399,13 +394,8 @@ public class GameController extends JPanel implements ActionListener {
 
     }
 
-    class setUserSettingsButton implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!running) {
-                startGame();
-            }
-        }
+    public void showFrame() throws IOException {
+        mainView.setJMenuBar(toolBarController);
+        mainView.showFrame();
     }
-
 }
