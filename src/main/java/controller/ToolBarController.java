@@ -8,14 +8,13 @@ import java.awt.event.KeyEvent;
 public class ToolBarController extends JMenuBar {
 
     //Menu Buttons
-    //File Menu Buttons
+    //Game Menu Buttons
     private JMenu gameButton,
             settingsMenuButton;
     private JMenuItem newGameButton;
     private JMenuItem exitMenuButton;
-    //Search Menu Buttons
+    //Settings Button
     private JMenuItem difficultyButton;
-    private JMenuItem userSettingsButton;
 
     public void setNewGameButton(ActionListener actionListener) {
         newGameButton.addActionListener(actionListener);
@@ -25,9 +24,6 @@ public class ToolBarController extends JMenuBar {
     }
     public void setDifficultyButton(ActionListener actionListener) {
         difficultyButton.addActionListener(actionListener);
-    }
-    public void setUserSettingsButton(ActionListener actionListener) {
-        userSettingsButton.addActionListener(actionListener);
     }
 
 
@@ -56,14 +52,8 @@ public class ToolBarController extends JMenuBar {
         settingsMenuButton.setMnemonic(KeyEvent.VK_S);
         this.add(settingsMenuButton);
 
-        difficultyButton = new JMenuItem("Difficulty", KeyEvent.VK_D);
+        difficultyButton = new JMenuItem("Difficult Level", KeyEvent.VK_D);
         difficultyButton.setAccelerator(KeyStroke.getKeyStroke((char) KeyEvent.VK_D));
         settingsMenuButton.add(difficultyButton);
-
-        settingsMenuButton.addSeparator();
-
-        userSettingsButton = new JMenuItem("User settings", KeyEvent.VK_U);
-        userSettingsButton.setAccelerator(KeyStroke.getKeyStroke((char) KeyEvent.VK_U));
-        settingsMenuButton.add(userSettingsButton);
     }
 }
