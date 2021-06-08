@@ -9,6 +9,7 @@ public class Icons {
     private Image numberIcon;
     private Image buttonIcon;
     private Image flagIcon;
+    private Image sunIcon;
 
     public Icons() {
     }
@@ -55,19 +56,41 @@ public class Icons {
                     numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/5m.png")));
                     break;
                 case 6:
-                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/6.png")));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/6m.png")));
                     break;
                 case 7:
-                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/7.png")));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/7m.png")));
                     break;
                 case 8:
-                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/8.png")));
+                    numberIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/8m.png")));
                     break;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return numberIcon;
+    }
+
+    public Image getSunIcon(char status) {
+        try {
+            switch (status) {
+                case 'w':
+                    sunIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/winner.png")));
+                    break;
+                case 'h':
+                    sunIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/happy.png")));
+                    break;
+                case 'd':
+                    sunIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/warningSun.png")));
+                    break;
+                case 'o':
+                    sunIcon = ImageIO.read(Objects.requireNonNull(getClass().getResource("/gameOver.png")));
+                    break;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return sunIcon;
     }
 
     public Image getFlagIcon() {

@@ -9,6 +9,7 @@ public class Cell extends JToggleButton {
     private int COORD_X;
     private int COORD_Y;
     private boolean mine = false;
+    private boolean flag = false;
     private int numberOfMinesAround;
 
     public Cell(int CELL_SIZE, int COORD_X, int COORD_Y) {
@@ -17,7 +18,6 @@ public class Cell extends JToggleButton {
         this.COORD_Y = COORD_Y;
         this.setName(COORD_X + " " + COORD_Y);
         this.setPreferredSize(new Dimension(CELL_SIZE, CELL_SIZE));
-        this.setAlignmentX(500);
         this.setModel(new CellModel());
         this.setActionCommand(COORD_X + " " + COORD_Y);
     }
@@ -28,6 +28,14 @@ public class Cell extends JToggleButton {
 
     public void setMine(boolean mine) {
         this.mine = mine;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 
     public int getCOORD_X() {
