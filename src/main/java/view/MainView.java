@@ -2,6 +2,7 @@ package view;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -9,8 +10,8 @@ import java.util.Objects;
 
 public class MainView extends JFrame {
 
+    private JPanel mainPanel = new JPanel();
     private JPanel jPanel = new JPanel();
-    private JPanel jPanel1 = new JPanel();
 
     public MainView() {
     }
@@ -26,9 +27,9 @@ public class MainView extends JFrame {
 
     public void showFrame() throws IOException {
         showJPanel(jPanel);
-        showJPanel(jPanel1);
-        jPanel.add(jPanel1);
-        this.add(jPanel);
+        showJPanel(mainPanel);
+        mainPanel.add(jPanel);
+        this.add(mainPanel);
         this.setTitle("Mines");
         this.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/gameIcon.jpg"))));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,9 +41,5 @@ public class MainView extends JFrame {
 
     public JPanel getjPanel() {
         return jPanel;
-    }
-
-    public JPanel getjPanel1() {
-        return jPanel1;
     }
 }
