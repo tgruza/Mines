@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
 
-public class MainController implements ActionListener {
+public class MainController implements ActionListener, MouseListener {
 
     private final MainView mainView = new MainView();
     private final ToolBarController toolBarController = new ToolBarController();
@@ -26,11 +26,15 @@ public class MainController implements ActionListener {
     private int numbOfCellsRows;
     private boolean running;
     private int numOfMines;
+    private JButton sun;
     private Cell[][] cell;
     private Random random;
     String cellPressedCoords = "";
     private int numberOfMinesAround;
-    private String difficultLevel = "";
+    private String difficultLevel = "easy";
+    private int cellsToUncover;
+    private int cellsUncovered = 0;
+    private boolean winner = false;
 
 
     public MainController() {
@@ -49,9 +53,11 @@ public class MainController implements ActionListener {
 
     public void startGame() {
         running = true;
+        winner = false;
         deleteCells();
         startValues();
         createCells();
+        addSunButton();
         setMines();
         checkNumberOfMinesAround();
         setImagesToCells();
@@ -61,37 +67,31 @@ public class MainController implements ActionListener {
 
     //get "difficult values" that was set by user and set app window and number of mines
     public void startValues() {
-        if (difficultLevel.equals("")) {
-            numbOfCellsInRow = 10;
-            numbOfCellsRows = 10;
-            SCREEN_WIDTH = 305;
-            SCREEN_HEIGHT = 305;
-            numOfMines = 12;
-        }
         if (difficultLevel.equals("easy")) {
             numbOfCellsInRow = 8;
             numbOfCellsRows = 8;
             SCREEN_WIDTH = 245;
-            SCREEN_HEIGHT = 245;
+            SCREEN_HEIGHT = 310;
             numOfMines = 10;
         }
         if (difficultLevel.equals("medium")) {
             numbOfCellsInRow = 16;
             numbOfCellsRows = 16;
             SCREEN_WIDTH = 482;
-            SCREEN_HEIGHT = 482;
+            SCREEN_HEIGHT = 547;
             numOfMines = 40;
         }
         if (difficultLevel.equals("hard")) {
             numbOfCellsRows = 16;
             numbOfCellsInRow = 30;
             SCREEN_WIDTH = 900;
-            SCREEN_HEIGHT = 482;
+            SCREEN_HEIGHT = 547;
             numOfMines = 99;
         }
 
+        cellsToUncover = (numbOfCellsInRow * numbOfCellsRows) - numOfMines;
+        mainView.getjPanel1().setPreferredSize(new Dimension(SCREEN_WIDTH, 60));
         mainView.getjPanel().setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        mainView.pack();
         cell = new Cell[numbOfCellsInRow][numbOfCellsRows];
     }
 
@@ -106,7 +106,7 @@ public class MainController implements ActionListener {
         }
     }
 
-    //add coordinates and size for each cell in array
+    //adds coordinates and size for each cell in array
     public void createCells() {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
@@ -115,19 +115,21 @@ public class MainController implements ActionListener {
         }
     }
 
-    //get random cell and set, or not mine on it
+    //gets random cell and set, or not mine on it
     public void setMines() {
         int x;
         int y;
         for (int i = 0; i < numOfMines; i++) {
             x = random.nextInt(numbOfCellsInRow);
             y = random.nextInt(numbOfCellsRows);
-
+            if (cell[x][y].isMine()) {
+                i--;
+            }
             cell[x][y].setMine(true);
         }
     }
 
-    //check number of mines around the each cell in array
+    //checks number of mines around the each cell in array
     public void checkNumberOfMinesAround() {
         numberOfMinesAround = 0;
 
@@ -179,7 +181,7 @@ public class MainController implements ActionListener {
         }
     }
 
-    //check if cell is mine and add proper image to it
+    //checks if cell is mine and add proper image to it
     public void setImagesToCells() {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
@@ -199,12 +201,13 @@ public class MainController implements ActionListener {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
                 cell[x][y].addActionListener(this);
+                cell[x][y].addMouseListener(this);
                 mainView.getjPanel().add(cell[x][y]);
             }
         }
     }
 
-    //check if cell has blind spot nearby and if yes uncover it and check again
+    //checks if cell has blind spot nearby, if yes uncover it and check again
     public void checkCell(String cellPressed) {
         for (int y = 0; y < numbOfCellsRows; y++) {
             for (int x = 0; x < numbOfCellsInRow; x++) {
@@ -226,6 +229,7 @@ public class MainController implements ActionListener {
                                 checkCell(cell[x + 1][y - 1].getActionCommand());
                             }
                             cell[x + 1][y - 1].setEnabled(false);
+
                         }
                         //right
                         if (x < (numbOfCellsInRow - 1)) {
@@ -275,6 +279,7 @@ public class MainController implements ActionListener {
                             }
                             cell[x - 1][y - 1].setEnabled(false);
                         }
+
                     }
                     if (cell[x][y].getNumberOfMinesAround() != 0) {
                         cell[x][y].setEnabled(false);
@@ -289,6 +294,22 @@ public class MainController implements ActionListener {
         }
     }
 
+    //checks how many cells has to be uncovered
+    public void checkCellsToUncover() {
+        cellsUncovered = 0;
+        for (int y = 0; y < numbOfCellsRows; y++) {
+            for (int x = 0; x < numbOfCellsInRow; x++) {
+                if (cell[x][y].isSelected()) {
+                    cellsUncovered++;
+                }
+            }
+        }
+        if (cellsUncovered == cellsToUncover) {
+            winner = true;
+            gameOver();
+        }
+    }
+
     //if user clicked on mine uncover all cells, and end game
     public void gameOver() {
         for (int y = 0; y < numbOfCellsRows; y++) {
@@ -297,15 +318,79 @@ public class MainController implements ActionListener {
                 cell[x][y].setEnabled(false);
             }
         }
+        if (winner) {
+            cellService.setSunIcon(sun, 'w');
+        } if (!winner) {
+            cellService.setSunIcon(sun, 'o');
+        }
         running = false;
+    }
+
+    public void setFlag(String cellPressed) {
+        for (int y = 0; y < numbOfCellsRows; y++) {
+            for (int x = 0; x < numbOfCellsInRow; x++) {
+                if (cell[x][y].getActionCommand().equals(cellPressed)) {
+                    if (!cell[x][y].isFlag()) {
+                        cell[x][y].setFlag(true);
+                        cellService.setFlagCellIcon(cell[x][y]);
+                    } else if (cell[x][y].isFlag()) {
+                        cell[x][y].setFlag(false);
+                        cellService.setButtonCellIcon(cell[x][y]);
+                    }
+                }
+            }
+        }
+    }
+
+    public void addSunButton() {
+        if (sun == null) {
+            sun = new JButton();
+            sun.addActionListener(new setNewGameButton());
+            sun.setPreferredSize(new Dimension(50, 50));
+            sun.setVisible(true);
+            sun.setBorder(null);
+            mainView.getjPanel1().add(sun);
+        }
+        cellService.setSunIcon(sun, 'h');
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         cellPressedCoords = actionEvent.getActionCommand();
         checkCell(cellPressedCoords);
+        checkCellsToUncover();
     }
 
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
+            setFlag(mouseEvent.getComponent().getName());
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+        if (running) {
+            cellService.setSunIcon(sun, 'd');
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+        if (running) {
+            cellService.setSunIcon(sun, 'h');
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
+    }
 
     public class MyKeyAdapter extends KeyAdapter {
         @Override
@@ -320,16 +405,10 @@ public class MainController implements ActionListener {
 
 
     //ToolBar listeners and settings
-    public ToolBarController getToolBarController() {
-        return toolBarController;
-    }
-
     class setNewGameButton implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!running) {
                 startGame();
-            }
         }
     }
 

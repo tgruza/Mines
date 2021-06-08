@@ -25,4 +25,14 @@ public class CellServiceImpl implements CellService {
     public void setFlagCellIcon(Cell cell) {
         cell.setIcon(new ImageIcon(icons.getFlagIcon()));
     }
+
+    @Override
+    public void setButtonCellIcon(Cell cell) {
+        cell.setIcon(new ImageIcon(icons.getButtonImage()));
+    }
+
+    @Override
+    public void setSunIcon(JButton jButton, char status) {
+        jButton.setIcon(new ImageIcon(icons.getSunIcon(status)));
+    }
 }
