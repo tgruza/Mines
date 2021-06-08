@@ -71,26 +71,25 @@ public class MainController implements ActionListener, MouseListener {
             numbOfCellsInRow = 8;
             numbOfCellsRows = 8;
             SCREEN_WIDTH = 245;
-            SCREEN_HEIGHT = 310;
+            SCREEN_HEIGHT = 297;
             numOfMines = 10;
         }
         if (difficultLevel.equals("medium")) {
             numbOfCellsInRow = 16;
             numbOfCellsRows = 16;
             SCREEN_WIDTH = 482;
-            SCREEN_HEIGHT = 547;
+            SCREEN_HEIGHT = 534;
             numOfMines = 40;
         }
         if (difficultLevel.equals("hard")) {
             numbOfCellsRows = 16;
             numbOfCellsInRow = 30;
             SCREEN_WIDTH = 900;
-            SCREEN_HEIGHT = 547;
+            SCREEN_HEIGHT = 534;
             numOfMines = 99;
         }
 
         cellsToUncover = (numbOfCellsInRow * numbOfCellsRows) - numOfMines;
-        mainView.getjPanel1().setPreferredSize(new Dimension(SCREEN_WIDTH, 60));
         mainView.getjPanel().setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         cell = new Cell[numbOfCellsInRow][numbOfCellsRows];
     }
@@ -345,12 +344,17 @@ public class MainController implements ActionListener, MouseListener {
     public void addSunButton() {
         if (sun == null) {
             sun = new JButton();
+            sun.setBackground(null);
             sun.addActionListener(new setNewGameButton());
-            sun.setPreferredSize(new Dimension(50, 50));
             sun.setVisible(true);
             sun.setBorder(null);
-            mainView.getjPanel1().add(sun);
+            sun.setContentAreaFilled(false);
+            sun.setLayout(null);
+            mainView.getjPanel().add(sun);
         }
+        sun.setLocation((SCREEN_WIDTH - 30) / 2, 35/2);
+        sun.setPreferredSize(new Dimension((SCREEN_WIDTH - 20), 50));
+
         cellService.setSunIcon(sun, 'h');
     }
 
